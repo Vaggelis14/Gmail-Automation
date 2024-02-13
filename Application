@@ -1,0 +1,59 @@
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace Assigment.Test
+{
+    internal class Assigment 
+    {
+        [Test]
+        public void TestingChrome()
+        {
+
+            //Opening the broswer using ChromeDriver
+            IWebDriver driver = new ChromeDriver();
+            //Requesting the site we want to use in this case Gmail.com
+            driver.Navigate().GoToUrl("https://gmail.com");
+            //Finding out where the login box is located
+            var loginBox = driver.FindElement(By.XPath("//*[@id=\"identifierId\"]"));
+            //We are filling out our email
+            loginBox.SendKeys("vaggeliseskitest@gmail.com");
+            //We are finding where the next button is and we are pressing it
+            driver.FindElement(By.CssSelector("#identifierNext")).Click();
+            //We are waiting 5 seconds to load the password box
+            Thread.Sleep(5000);
+            //Repeating the same actions for password as we did at Email
+            var passwordBox = driver.FindElement(By.XPath("//*[@id=\"password\"]/div[1]/div/div[1]/input"));
+            passwordBox.SendKeys("*C7^F3@hf&pyzS");
+            driver.FindElement(By.XPath("//*[@id=\"passwordNext\"]/div/button")).Click();
+            //Wating again 5 seconds to load our emails
+            Thread.Sleep(5000);
+            //Looking if the primary box is selected and if not we are clicking on it
+            var primaryInbox = driver.FindElement(By.XPath("//*[@id=\":1s\"]"));
+            if (!primaryInbox.Selected)
+            {
+                primaryInbox.Click();
+            }
+            //We are getting the maximum numbers of the emails
+            var emailCountText = driver.FindElement(By.XPath("/html/body/div[7]/div[3]/div/div[2]/div[2]/div/div/div/div[1]/div/div[1]/div[2]/div/span/div[1]/span/span[2]")).Text.ToString();
+            Console.WriteLine("Number of emails: " + emailCountText);
+            //We are getting the list of the emails 
+            List<IWebElement> emailElements = driver.FindElements(By.XPath("//*[@id=\":22\"]/tbody/tr")).ToList();
+            //Calling the function we made to find the exact Sender and Subject of the email of our choice on the list
+            ExtractEmailDetails(emailElements[0]);
+
+
+        }
+        private void ExtractEmailDetails(IWebElement emailElement)
+        {
+            var emailSender = emailElement.FindElement(By.ClassName("zF")).GetAttribute("email");
+            var emailSubject = emailElement.FindElement(By.ClassName("bqe")).GetAttribute("innerHTML");
+            Console.WriteLine("Sender: " + emailSender + " | Subject: " + emailSubject);
+        }
+    }
+}

@@ -1,0 +1,1 @@
+This is an Automation Test for Selenium in C# to login into Gmail with your credential to fetch how many emails are in total in the primary tab and also get the information about the sender and the subject of the Nth email.
